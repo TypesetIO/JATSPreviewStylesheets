@@ -310,10 +310,8 @@ or pipeline) parameterized.
               <xsl:apply-templates mode="metadata"
                 select="contrib-group"/>
               <xsl:if test="aff | aff-alternatives | author-notes">
-                <div class="metadata-group">
-                  <xsl:apply-templates mode="metadata"
-                    select="aff | aff-alternatives | author-notes"/>
-                </div>
+                <xsl:apply-templates mode="metadata-inline"
+                  select="aff | aff-alternatives | author-notes"/>
               </xsl:if>
               <xsl:apply-templates select="issn | issn-l | isbn | publisher | notes | self-uri" mode="metadata"/>
             </div>
@@ -444,24 +442,15 @@ or pipeline) parameterized.
     
       <!-- change context to front/article-meta (again) -->
       <xsl:for-each select="article-meta | self::front-stub">
-        <div class="metadata centered">
+        <div class="metadata">
           <xsl:apply-templates mode="metadata" select="title-group"/>
         </div>
         <!-- contrib-group, aff, aff-alternatives, author-notes -->
         <xsl:apply-templates mode="metadata" select="contrib-group"/>
         <!-- back in article-meta or front-stub context -->
         <xsl:if test="aff | aff-alternatives | author-notes">
-          <div class="metadata two-column table">
-            <div class="row">
-            <div class="cell empty"/>
-            <div class="cell">
-              <div class="metadata-group">
-                <xsl:apply-templates mode="metadata"
-                  select="aff | aff-alternatives | author-notes"/>
-              </div>
-            </div>
-            </div>
-          </div>
+          <xsl:apply-templates mode="metadata"
+            select="aff | aff-alternatives | author-notes"/>
         </xsl:if>
         
         <!-- abstract(s) -->
@@ -471,23 +460,19 @@ or pipeline) parameterized.
           
           <xsl:for-each select="abstract | trans-abstract">
             <!-- title in left column, content (paras, secs) in right -->
-            <div class="metadata two-column table">
-              <div class="row">
-              <div class="cell" style="text-align: right">
-                <h4 class="callout-title">
-                  <xsl:apply-templates select="title/node()"/>
-                  <xsl:if test="not(normalize-space(string(title)))">
-                    <span class="generated">
-                      <xsl:if test="self::trans-abstract">Translated </xsl:if>
-                      <xsl:text>Abstract</xsl:text>
-                    </span>
-                  </xsl:if>
-                </h4>
-              </div>
-              <div class="cell">
+            <div class="abstract">
+              <h4>
+                <xsl:apply-templates select="title/node()"/>
+                <xsl:if test="not(normalize-space(string(title)))">
+                  <span class="generated">
+                    <xsl:if test="self::trans-abstract">Translated </xsl:if>
+                    <xsl:text>Abstract</xsl:text>
+                  </span>
+                </xsl:if>
+              </h4>
+              <p>
                 <xsl:apply-templates select="*[not(self::title)]"/>
-              </div>
-              </div>
+              </p>
             </div>
           </xsl:for-each>
           <!-- end of abstract or trans-abstract -->
@@ -1456,46 +1441,40 @@ or pipeline) parameterized.
         (address | aff | author-comment | bio | email |
         ext-link | on-behalf-of | role | uri | xref)*) -->
       <!-- each contrib makes a row: name at left, details at right -->
-      <xsl:for-each select="contrib">
-        <!--  content model of contrib:
-          ((contrib-id)*,
-           (anonymous | collab | collab-alternatives | name | name-alternatives)*,
-           (degrees)*,
-           (address | aff | aff-alternatives | author-comment | bio | email |
-            ext-link | on-behalf-of | role | uri | xref)*)       -->
-        <div class="metadata two-column table">
-          <div class="row">
-          <div class="cell" style="text-align: right">
-            <xsl:call-template name="contrib-identify">
-              <!-- handles (contrib-id)*,
-                (anonymous | collab | collab-alternatives |
-                 name | name-alternatives | degrees | xref) -->
-            </xsl:call-template>
-          </div>
-          <div class="cell">
-            <xsl:call-template name="contrib-info">
-              <!-- handles
-                   (address | aff | author-comment | bio | email |
-                    ext-link | on-behalf-of | role | uri) -->
-            </xsl:call-template>
-          </div>
-          </div>
-        </div>
-      </xsl:for-each>
+      <div class="contribs">
+        <xsl:for-each select="contrib">
+          <!--  content model of contrib:
+            ((contrib-id)*,
+            (anonymous | collab | collab-alternatives | name | name-alternatives)*,
+            (degrees)*,
+            (address | aff | aff-alternatives | author-comment | bio | email |
+              ext-link | on-behalf-of | role | uri | xref)*)       -->
+          <span class="contrib">
+            <span class="identity">
+              <xsl:call-template name="contrib-identify">
+                <!-- handles (contrib-id)*,
+                  (anonymous | collab | collab-alternatives |
+                  name | name-alternatives | degrees | xref) -->
+              </xsl:call-template>
+            </span>
+            <span class="info">
+              <xsl:call-template name="contrib-info">
+                <!-- handles
+                    (address | aff | author-comment | bio | email |
+                      ext-link | on-behalf-of | role | uri) -->
+              </xsl:call-template>
+            </span>
+          </span>
+        </xsl:for-each>
+      </div>
+
       <!-- end of contrib -->
       <xsl:variable name="misc-contrib-data"
         select="*[not(self::contrib | self::xref)]"/>
       <xsl:if test="$misc-contrib-data">
-        <div class="metadata two-column table">
-          <div class="row">
-          <div class="cell">&#160;</div>
-          <div class="cell">
-            <div class="metadata-group">
-              <xsl:apply-templates mode="metadata"
-                select="$misc-contrib-data"/>
-            </div>
-          </div>
-          </div>
+        <div class="metadata-group">
+          <xsl:apply-templates mode="metadata"
+            select="$misc-contrib-data"/>
         </div>
       </xsl:if>
   </xsl:template>
@@ -1507,7 +1486,7 @@ or pipeline) parameterized.
     (anonymous | collab | collab-alternatives |
     name | name-alternatives | degrees | xref)
     and @equal-contrib -->
-    <div class="metadata-group">
+    <span class="metadata-group">
       <xsl:for-each select="anonymous |
         collab | collab-alternatives/* | name | name-alternatives/*">
         <xsl:call-template name="metadata-entry">
@@ -1529,7 +1508,6 @@ or pipeline) parameterized.
               <xsl:apply-templates mode="metadata-inline"
                 select="following-sibling::xref"/>
             </xsl:if>
-            
           </xsl:with-param>
         </xsl:call-template>
       </xsl:for-each>
@@ -1540,7 +1518,7 @@ or pipeline) parameterized.
           </xsl:with-param>
         </xsl:call-template>
       </xsl:if>
-    </div>
+    </span>
   </xsl:template>
 
 
@@ -1584,11 +1562,11 @@ or pipeline) parameterized.
   
   <xsl:template name="contrib-info">
     <!-- Placed in a right-hand pane -->
-    <div class="metadata-group">
+    <span class="metadata-group">
       <xsl:apply-templates mode="metadata"
         select="address | aff | author-comment | bio | email |
                 ext-link | on-behalf-of | role | uri"/>
-    </div>
+    </span>
   </xsl:template>
 
 
