@@ -2082,6 +2082,12 @@ or pipeline) parameterized.
     </p>
   </xsl:template>
 
+  <xsl:template match="code">
+    <xsl:call-template name="named-anchor"/>
+    <div class="code panel">
+      <xsl:apply-templates/>
+    </div>
+  </xsl:template>
 
   <xsl:template match="boxed-text | chem-struct-wrap | fig |
                        table-wrap | chem-struct-wrapper">
