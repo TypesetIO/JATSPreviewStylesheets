@@ -2209,16 +2209,7 @@ or pipeline) parameterized.
 
 
   <xsl:template match="list" mode="list">
-    <xsl:variable name="style">
-      <xsl:choose>
-        <xsl:when test="@list-type='alpha-lower'">lower-alpha</xsl:when>
-        <xsl:when test="@list-type='alpha-upper'">upper-alpha</xsl:when>
-        <xsl:when test="@list-type='roman-lower'">lower-roman</xsl:when>
-        <xsl:when test="@list-type='roman-upper'">upper-roman</xsl:when>
-        <xsl:otherwise>decimal</xsl:otherwise>
-      </xsl:choose>
-    </xsl:variable>
-    <ol style="list-style-type: {$style}">
+    <ol>
       <xsl:apply-templates select="list-item"/>
     </ol>
   </xsl:template>
