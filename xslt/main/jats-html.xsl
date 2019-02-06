@@ -280,8 +280,8 @@ or pipeline) parameterized.
 
     <!-- more metadata goes in the footer -->
     <div id="{$this-article}-footer" class="footer">
-      <xsl:call-template name="footer-metadata"/>
-      <xsl:call-template name="footer-branding"/>
+      <!--xsl:call-template name="footer-metadata"/>
+      <xsl:call-template name="footer-branding"/-->
     </div>
 
     <!-- sub-article or response (recursively calls
