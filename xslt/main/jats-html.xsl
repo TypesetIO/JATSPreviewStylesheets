@@ -2893,6 +2893,12 @@ or pipeline) parameterized.
     </span>
   </xsl:template>
 
+  <xsl:template match="x">
+    <xsl:if test="@ts-content-type = 'pagebreak'">
+      <hr class="pagebreak"/>
+    </xsl:if>
+    <xsl:apply-templates/>
+  </xsl:template>
 
   <!-- ============================================================= -->
   <!--  BACK MATTER                                                  -->
